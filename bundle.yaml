@@ -14,8 +14,7 @@ Syntaxes/html.tmLanguage:
   # A simple grammar (based on the one that HTML one that ships with textmate)
   # that colors tags and entities and supports a couple of embedded languages.
 
-  # This magic vodoo expression was at the end of all then opening tag matches
-  # I have no idea what it does:
+  # This expression allows you to match an opening tag that isn't self-closing
   # (?![^>]*/>)
 
   - name: source.sass.embedded.
@@ -24,6 +23,7 @@ Syntaxes/html.tmLanguage:
       (<) ((?i:style))
       \s+
       (?=type=[\'\"]text/sass[\'\"])
+      (?![^>]*/>)
     end: |
       (</) ((?i:style)) (>)
       (?:\s*\n)?
@@ -44,6 +44,7 @@ Syntaxes/html.tmLanguage:
     begin: |
       (?:^\s+)?
       (<) ((?i:style)) \b
+      (?![^>]*/>)
     captures:
       1: { name: punctuation.definition.tag. }
       2: { name: entity.name.tag.style. }
