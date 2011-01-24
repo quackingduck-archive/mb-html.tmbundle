@@ -76,15 +76,6 @@ Syntaxes/html.tmLanguage:
         2: { name: entity.name.tag.script. }
       end: (</)((?i:script))
       patterns:
-      - name: comment.line.double-slash.js
-        captures:
-          1: { name: punctuation.definition.comment.js }
-        match: (//).*?((?=</script)|$\n?)
-      - name: comment.block.js
-        begin: /\*
-        captures:
-          0: { name: punctuation.definition.comment.js }
-        end: \*/|(?=</script)
       - include: source.js
 
   - name: meta.tag.other.
