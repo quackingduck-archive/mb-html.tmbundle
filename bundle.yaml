@@ -14,13 +14,43 @@ Syntaxes/html.tmLanguage:
   # A simple grammar (based on the one that HTML one that ships with textmate)
   # that colors tags and entities and supports a couple of embedded languages.
 
-  - name: source.css.embedded.
-    begin: (?:^\s+)?(<)((?i:style))\b(?![^>]*/>)
+  # This magic vodoo expression was at the end of all then opening tag matches
+  # I have no idea what it does:
+  # (?![^>]*/>)
+
+  - name: source.sass.embedded.
+    begin: |
+      (?:^\s+)?
+      (<) ((?i:style))
+      \s+
+      (?=type=[\'\"]text/sass[\'\"])
+    end: |
+      (</) ((?i:style)) (>)
+      (?:\s*\n)?
     captures:
       1: { name: punctuation.definition.tag. }
       2: { name: entity.name.tag.style. }
       3: { name: punctuation.definition.tag. }
-    end: (</)((?i:style))(>)(?:\s*\n)?
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (>)
+      beginCaptures:
+        1: { name: punctuation.definition.tag. }
+      end: (?=</(?i:style))
+      patterns:
+      - include: source.sass
+
+  - name: source.css.embedded.
+    begin: |
+      (?:^\s+)?
+      (<) ((?i:style)) \b
+    captures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.style. }
+      3: { name: punctuation.definition.tag. }
+    end: |
+      (</)((?i:style))(>)
+      (?:\s*\n)?
     patterns:
     - include: "#tag-stuff"
     - begin: (>)
