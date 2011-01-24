@@ -1,0 +1,126 @@
+# Name and Identity of bundle
+info.plist:
+  uuid: 20DED3DA-CB5D-4B9F-B822-E4B052C06666
+  name:  ㎆ HTML
+
+Syntaxes/html.tmLanguage:
+  uuid: 110C54F5-F865-4EF7-88BC-7B3F204F5325
+  name:  ㎆ HTML
+  scopeName: text.html.mb
+  fileTypes: [ 'html' ]
+  keyEquivalent: ^~H
+  patterns:
+
+  # A simple grammar (based on the one that HTML one that ships with textmate)
+  # that colors tags and entities and supports a couple of embedded languages.
+
+  - name: source.css.embedded.
+    begin: (?:^\s+)?(<)((?i:style))\b(?![^>]*/>)
+    captures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.style. }
+      3: { name: punctuation.definition.tag. }
+    end: (</)((?i:style))(>)(?:\s*\n)?
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (>)
+      beginCaptures:
+        1: { name: punctuation.definition.tag. }
+      end: (?=</(?i:style))
+      patterns:
+      - include: source.css
+
+  - name: source.js.embedded.
+    begin: (?:^\s+)?(<)((?i:script))\b(?![^>]*/>)
+    end: (?<=</(script|SCRIPT))(>)(?:\s*\n)?
+    endCaptures:
+      2: { name: punctuation.definition.tag. }
+    beginCaptures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.script. }
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (?<!</(?:script|SCRIPT))(>)
+      captures:
+        1: { name: punctuation.definition.tag. }
+        2: { name: entity.name.tag.script. }
+      end: (</)((?i:script))
+      patterns:
+      - name: comment.line.double-slash.js
+        captures:
+          1: { name: punctuation.definition.comment.js }
+        match: (//).*?((?=</script)|$\n?)
+      - name: comment.block.js
+        begin: /\*
+        captures:
+          0: { name: punctuation.definition.comment.js }
+        end: \*/|(?=</script)
+      - include: source.js
+
+  - name: meta.tag.other.
+    begin: (</?)([a-zA-Z0-9:]+)
+    end: (>)
+    endCaptures:
+      1: { name: punctuation.definition.tag.end. }
+    beginCaptures:
+      1: { name: punctuation.definition.tag.begin. }
+      2: { name: entity.name.tag.other. }
+    patterns:
+    - include: "#tag-stuff"
+
+  - name: comment.block.
+    begin: <!--
+    end: --\s*>
+    captures:
+      0: { name: punctuation.definition.comment. }
+    patterns:
+    - name: invalid.illegal.bad-comments-or-CDATA.
+      match: --
+
+  - include: '#entities'
+
+  repository:
+    tag-stuff:
+      patterns:
+      - include: "#tag-generic-attribute"
+      - include: "#string-double-quoted"
+      - include: "#string-single-quoted"
+
+    tag-generic-attribute:
+      name: entity.other.attribute-name.
+      match: \b([a-zA-Z\-:]+)
+
+    string-double-quoted:
+      name: string.quoted.double.
+      begin: "\""
+      end: "\""
+      beginCaptures:
+        0: { name: punctuation.definition.string.begin. }
+      endCaptures:
+        0: { name: punctuation.definition.string.end. }
+      patterns:
+      - include: "#entities"
+
+    string-single-quoted:
+      name: string.quoted.single.
+      begin: "'"
+      endCaptures:
+        0: { name: punctuation.definition.string.end. }
+      beginCaptures:
+        0: { name: punctuation.definition.string.begin. }
+      end: "'"
+      patterns:
+      - include: "#entities"
+
+    entities:
+      patterns:
+      - name: constant.character.entity.
+        match: |
+          (&) # 1
+          ([a-zA-Z0-9]+|\#[0-9]+|\#x[0-9a-fA-F]+) # 2
+          (;) # 3
+        captures:
+          1: { name: punctuation.definition.entity. }
+          3: { name: punctuation.definition.entity. }
+      - name: invalid.illegal.bad-ampersand.
+        match: "&"
