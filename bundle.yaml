@@ -20,9 +20,7 @@ Syntaxes/html.tmLanguage:
   - name: source.sass.embedded.
     begin: |
       (?:^\s+)?
-      (<) ((?i:style))
-      \s+
-      (?=type=[\'\"]text/sass[\'\"])
+      (<) ((?i:style)) \s+ (?=type=[\'\"]text/sass[\'\"])
       (?![^>]*/>)
     end: |
       (</) ((?i:style)) (>)
@@ -61,9 +59,30 @@ Syntaxes/html.tmLanguage:
       patterns:
       - include: source.css
 
+  - name: source.coffee.embedded.
+    begin: |
+      (?:^\s+)?
+      (<) ((?i:script)) \s+ (?=type=[\'\"]text/coffeescript[\'\"])
+      (?![^>]*/>)
+    end: (?<=</(script|SCRIPT)) (>) (?:\s*\n)?
+    endCaptures:
+      2: { name: punctuation.definition.tag. }
+    beginCaptures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.script. }
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (?<!</(?:script|SCRIPT))(>)
+      captures:
+        1: { name: punctuation.definition.tag. }
+        2: { name: entity.name.tag.script. }
+      end: (</)((?i:script))
+      patterns:
+      - include: source.coffee
+
   - name: source.js.embedded.
-    begin: (?:^\s+)?(<)((?i:script))\b(?![^>]*/>)
-    end: (?<=</(script|SCRIPT))(>)(?:\s*\n)?
+    begin: (?:^\s+)? (<) ((?i:script)) \b (?![^>]*/>)
+    end: (?<=</(script|SCRIPT)) (>) (?:\s*\n)?
     endCaptures:
       2: { name: punctuation.definition.tag. }
     beginCaptures:

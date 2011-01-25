@@ -15,9 +15,7 @@
 		<dict>
 			<key>begin</key>
 			<string>(?x)(?:^\s+)?
-			(&lt;) ((?i:style))
-			\s+
-			(?=type=[\'\&quot;]text/sass[\'\&quot;])
+			(&lt;) ((?i:style)) \s+ (?=type=[\'\&quot;]text/sass[\'\&quot;])
 			(?![^&gt;]*/&gt;)
 			</string>
 			<key>captures</key>
@@ -134,7 +132,10 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>(?x)(?:^\s+)?(&lt;)((?i:script))\b(?![^&gt;]*/&gt;)</string>
+			<string>(?x)(?:^\s+)?
+			(&lt;) ((?i:script)) \s+ (?=type=[\'\&quot;]text/coffeescript[\'\&quot;])
+			(?![^&gt;]*/&gt;)
+			</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
@@ -149,7 +150,69 @@
 				</dict>
 			</dict>
 			<key>end</key>
-			<string>(?x)(?&lt;=&lt;/(script|SCRIPT))(&gt;)(?:\s*\n)?</string>
+			<string>(?x)(?&lt;=&lt;/(script|SCRIPT)) (&gt;) (?:\s*\n)?</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.tag.mb</string>
+				</dict>
+			</dict>
+			<key>name</key>
+			<string>source.coffee.embedded.mb</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>include</key>
+					<string>#tag-stuff</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>(?x)(?&lt;!&lt;/(?:script|SCRIPT))(&gt;)</string>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.definition.tag.mb</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>entity.name.tag.script.mb</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(?x)(&lt;/)((?i:script))</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>source.coffee</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>(?x)(?:^\s+)? (&lt;) ((?i:script)) \b (?![^&gt;]*/&gt;)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.tag.mb</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.tag.script.mb</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>(?x)(?&lt;=&lt;/(script|SCRIPT)) (&gt;) (?:\s*\n)?</string>
 			<key>endCaptures</key>
 			<dict>
 				<key>2</key>
