@@ -17,6 +17,48 @@ Syntaxes/html.tmLanguage:
   # This expression allows you to match an opening tag that isn't self-closing
   # (?![^>]*/>)
 
+  - name: source.stylus.embedded.
+    begin: |
+      (?:^\s+)?
+      (<) ((?i:style)) \s+ (?=type=[\'\"]text/stylus[\'\"])
+      (?![^>]*/>)
+    end: |
+      (</) ((?i:style)) (>)
+      (?:\s*\n)?
+    captures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.style. }
+      3: { name: punctuation.definition.tag. }
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (>)
+      beginCaptures:
+        1: { name: punctuation.definition.tag. }
+      end: (?=</(?i:style))
+      patterns:
+      - include: source.stylus
+
+  - name: source.scss.embedded.
+    begin: |
+      (?:^\s+)?
+      (<) ((?i:style)) \s+ (?=type=[\'\"]text/scss[\'\"])
+      (?![^>]*/>)
+    end: |
+      (</) ((?i:style)) (>)
+      (?:\s*\n)?
+    captures:
+      1: { name: punctuation.definition.tag. }
+      2: { name: entity.name.tag.style. }
+      3: { name: punctuation.definition.tag. }
+    patterns:
+    - include: "#tag-stuff"
+    - begin: (>)
+      beginCaptures:
+        1: { name: punctuation.definition.tag. }
+      end: (?=</(?i:style))
+      patterns:
+      - include: source.scss
+
   - name: source.sass.embedded.
     begin: |
       (?:^\s+)?
